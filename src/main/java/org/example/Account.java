@@ -1,25 +1,44 @@
 package org.example;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Account {
+    private static final AtomicLong accountCounter = new AtomicLong(1000);
     private String accountNumber;
     BigDecimal accountBalance;
-    public Client customer;
+    public List<Client>  customers=new ArrayList<>();
 
-    public Account(String accountNumber, BigDecimal accountBalance, Client customer) {
-        this.accountNumber = accountNumber;
+    public Account( BigDecimal accountBalance, List<Client> customers) {
+        this.accountNumber =  generateAccountNumber();
         this.accountBalance = accountBalance;
-        this.customer = customer;
+        this.customers = customers;
     }
 
     public String getAccountNumber() {
         return accountNumber;
     }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+    //Implement a method to deposit money into the account.
+    public void depositMoney(BigDecimal amount){
+        BigDecimal newAmount=this.accountBalance.add(amount);
+        this.accountBalance=newAmount;
     }
+    //Implement a method to withdraw money from the account.
+    public void withdrawMoney(BigDecimal amount){
+        BigDecimal newAmount=this.accountBalance.subtract(amount);
+        this.accountBalance=newAmount;
+    }
+    private String generateAccountNumber() {
+        // Using timestamp and a counter for uniqueness
+        long result=System.currentTimeMillis() + accountCounter.getAndIncrement();
+        return Long.toString(result);
+    }
+
+   /* public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }*/
 
     public BigDecimal getAccountBalance() {
         return accountBalance;
@@ -29,11 +48,20 @@ public class Account {
         this.accountBalance = accountBalance;
     }
 
-    public Client getCustomer() {
-        return customer;
+    public List<Client> getCustomer() {
+        return customers;
     }
 
-    public void setCustomer(Client customer) {
-        this.customer = customer;
+    public void setCustomer(List<Client> customers) {
+        this.customers = customers;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", accountBalance=" + accountBalance +
+                ", customers=" + customers +
+                '}';
     }
 }
